@@ -1,12 +1,20 @@
+import { StringMap } from './../interfaces/StringMap';
 import IQueue from '../interfaces/IQueue';
 import { Service } from 'typedi';
 
 @Service()
 export default class Queue implements IQueue {
     private items: string[];
+    private list: StringMap;
 
     constructor(...params: string[]) {
         this.items = [...params];
+        this.list = {};
+        // this.list['playlist-1'] = ['vidId1', 'vidId2', 'vidId3'];
+
+        // TODO: implement add, remove and reorder based on the key-value list.
+        // key is playlist ID, and value is the items array.
+        // implement a "create playlist", expose list of playlists to client to choose from.
     }
 
     public async enqueue(item: string): Promise<void> {
