@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  playlist-server:
+    container_name: playlist-server
+    build: 
+      context: ./playlist-server
+      dockerfile: Dockerfile
+    ports:
+      - "3400:3400"
+      - "6969:6969"
+    environment:
+      WEBSOCKET_PORT: 6969
+
+  playlist-client:
+    container_name: playlist-client
+    build: 
+      context: ./playlist-client
+      dockerfile: Dockerfile
+    ports: 
+      - "3000:3000"
+    environment: 
+      API_BASE_URL: http://127.0.0.1:3400/

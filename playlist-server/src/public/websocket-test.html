@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            textarea {
+                width: 100%;
+                min-height: 30rem;
+                font-family: monospace;
+                font-size: 1rem;
+                line-height: 1.2;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Real Time Messaging</h1>
+        <pre id="messages" style="height: 400px; overflow: scroll"></pre>
+        <!-- <input type="text" id="messageBox" placeholder="Type your message here" style="display: block; width: 100%; margin-bottom: 10px; padding: 10px" /> -->
+        <textarea name="" id="myTextarea" cols="30" rows="10"></textarea>
+        <button id="send" title="Send Message!" style="width: 100%; height: 30px">Send Message</button>
+
+        <script>
+            (function () {
+                const sendBtn = document.querySelector('#send');
+                const messages = document.querySelector('#messages');
+                const messageBox = document.querySelector('#messageBox');
+                const textArea = document.querySelector('#myTextarea');
+                let ws;
+
+                function showMessage(message) {
+                    if (message instanceof Blob) {
+                        reader = new FileReader();
+
+                        reader.onload = () => {
+                            console.log('Result: ' + reader.result);
+                        };
+
+                        reader.readAsText(message);
+                    } else {
+                        messages.textContent += `\n\n${message}`;
+                        messages.scrollTop = messages.scrollHeight;
+                        messageBox.value = '';
+                    }
+                }
+
+                function init() {
+                    if (ws) {
+                        ws.onerror = ws.onopen = ws.onclose = null;
+                        ws.close();
+                    }
+
+                    ws = new WebSocket('ws://localhost:6969');
+                    ws.onopen = () => {
+                        console.log('Connection opened!');
+                    };
+                    ws.onmessage = ({ data }) => showMessage(data);
+                    ws.onclose = function () {
+                        ws = null;
+                        init();
+                    };
+                }
+
+                textArea.onkeyup = function () {
+                    try {
+                        const input = textArea.value;
+                        textAsJson = JSON.parse(input);
+                        var textedJson = JSON.stringify(textAsJson, undefined, 2);
+                        textArea.value = textedJson;
+                    } catch (error) {
+                        console.log(error);
+                    }
+                };
+
+                sendBtn.onclick = function () {
+                    // if (!ws) {
+                    //     showMessage('No WebSocket connection :(');
+                    //     return;
+                    // }
+                    // ws.send(messageBox.value);
+                    // showMessage(messageBox.value);
+                };
+
+                init();
+            })();
+        </script>
+    </body>
+</html>

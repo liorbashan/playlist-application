@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+/dist
+/.vscode
+.vscode
+.env
+/public/debug.log
